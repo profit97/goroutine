@@ -6,42 +6,42 @@ import (
 
 // Пример тестовой функции
 func TestGenerateRandomElements(t *testing.T) {
-	// Тест для пустого слайса
-	result := generateRandomElements(0)
-	if len(result) != 0 {
-		t.Errorf("Ожидиается пустой слайс, но имеет %d элементов", len(result))
+	testCases := []struct {
+		size int
+		want int
+	}{
+		{0, 0},
+		{1, 1},
+		{5, 5},
 	}
 
-	// Тест для слайса с одним элементом
-	result = generateRandomElements(1)
-	if len(result) != 1 {
-		t.Errorf("Ожидается слайс с 1 элементом, но имеет %d", len(result))
-	}
-
-	// Тест для слайса с несколькими элементами
-	result = generateRandomElements(5)
-	if len(result) != 5 {
-		t.Errorf("ожидается слайс с 5 элементами, но имеет %d", len(result))
+	for _, tc := range testCases {
+		result := generateRandomElements(tc.size)
+		if len(result) != tc.want {
+			t.Errorf("При size=%d, ожидается слайс с %d элементами, но имеет %d", tc.size, tc.want, len(result))
+		}
 	}
 }
 func TestMaximum(t *testing.T) {
-	// Тест для пустого слайса
-	if maximum([]int{}) != 0 {
-		t.Error("Ожидалось panic или ошибка для пустого слайса")
+	testCases := []struct {
+		data   []int
+		expect int
+	}{
+		{[]int{}, 0}, // Обратите внимание, что здесь мы ожидаем панику или ошибку
+		{[]int{42}, 42},
+		{[]int{1, 2, 3, 4, 5}, 5},
+		{[]int{5, 1, 2}, 5},
 	}
 
-	// Тест для слайса с одним элементом
-	if result := maximum([]int{42}); result != 42 {
-		t.Errorf("Ожидалось 42, получено %d", result)
-	}
-
-	// Тест для слайса с несколькими элементами
-	if result := maximum([]int{1, 2, 3, 4, 5}); result != 5 {
-		t.Errorf("Ожидалось 5, получено %d", result)
-	}
-
-	// Тест для слайса, где максимальное число в начале
-	if result := maximum([]int{5, 1, 2}); result != 5 {
-		t.Errorf("Ожидалось 5, получено %d", result)
+	for _, tc := range testCases {
+		defer func() {
+			if r := recover(); r != nil && tc.data == nil {
+				// Ожидаем панику для пустого слайса
+				return
+			}
+			if tc.expect != maximum(tc.data) {
+				t.Errorf("Для данных %v, ожидалось %d, получено %d", tc.data, tc.expect, maximum(tc.data))
+			}
+		}()
 	}
 }
