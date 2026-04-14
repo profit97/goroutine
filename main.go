@@ -20,7 +20,7 @@ func generateRandomElements(size int) []int {
 
 	elements := make([]int, size)
 	for i := range elements {
-		elements[i] = rand.Int() //
+		elements[i] = rand.Int() 
 	}
 	return elements
 }
@@ -58,7 +58,7 @@ func maxChunks(data []int) int {
 			end := start + chunkSize
 
 			if i == CHUNKS-1 {
-				end = len(data) // Последний срез должен включать все оставшиеся элементы
+				end = len(data)
 			}
 
 			go func(start, end int) {
@@ -67,36 +67,29 @@ func maxChunks(data []int) int {
 			}(start, end)
 		}
 
-		// Дождитесь завершения всех горутин
 		wg.Wait()
-
-		// Найдите максимальное значение среди максимумов
+		
 		max := maxValues[0]
 		for _, value := range maxValues {
 			if value > max {
 				max = value
 			}
 		}
-
 		return max
-
 	}
 }
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
 	fmt.Printf("Генерируем %d целых чисел\n", SIZE)
-	// ваш код здесь
 	data := generateRandomElements(SIZE)
 	fmt.Println("Ищем максимальное значение в один поток")
-	// ваш код здесь
 	start := time.Now()
 	max := maximum(data)
 	elapsed := time.Since(start)
 	fmt.Printf("Максимальное значение элемента: %d\nВремя поиска: %d ms\n", max, elapsed)
 
 	fmt.Printf("Ищем максимальное значение в %d потоков\n", CHUNKS)
-	// ваш код здесь
 	start = time.Now()
 	max = maxChunks(data)
 	elapsed = time.Since(start)
